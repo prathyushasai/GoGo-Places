@@ -11,44 +11,23 @@
         html,
         body,
         #map-canvas {
-            height: 1000px;
+            height: 700px;
             margin: 0px;
-            padding: 0px;
-            position: relative;
+            padding: 0px
         }
         h1 {
             padding: 10px;
-        }
-        #search {
-          -webkit-border-radius: 60;
-          -moz-border-radius: 60;
-          border-radius: 40px;
-          font-family: Georgia;
-          color: #ffffff;
-          font-size: 15px;
-          background: #0099ff;
-          padding: 2px 6px 2px 6px;
-          text-decoration: none;
-          position: absolute;
-        }
-        #search:hover {
-          background: #9eb0ff;
-          text-decoration: none;
-        }
-        #fetch {
-            padding: 10px;
-            position: absolute;
         }
     </style>
 
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.6.2.min.js"></script>
 
-
 </head>
 
 <body>
     <div class="container">
+        <div id="header">Time to plan a scavenger hunt!</div>
         <section id="fetch">
             <input type="text" placeholder="Enter a city name" id="city" />
             <button id="search">Search</button>
@@ -68,27 +47,45 @@
             var getCity = function() {
                 var city_name = $('#city').val();
                 if (city_name == '') {
-                    $('#input').html("<h2 class='loading'>Please enter something.</h2>");
+                    $('#input').html("<div class='loading'>Please enter something.</div>");
                 } else {
-                    $('#input').html("<h2 class='loading'>Here are cool places to explore!</h2>");
+                    $('#input').html("<div class='loading'>Here are cool places to explore!</div>");
                     var queryBuilder = "https://api.sandbox.amadeus.com/v1.2/points-of-interest/yapq-search-text?apikey=MdRDIiKITombYOZ8WNpCnXizyYmb2QIG&city_name=" + city_name;
               $.getJSON(queryBuilder, function(json) {
-                console.log(json)
+                var image = 'https://raw.githubusercontent.com/prathyushasai/GoGo-Places/master/coin.png';
+                var markers = [];
+                var infoWindows = [];
                 for (i = 0; i < 8; ++ i) {
                   var myLatLng = {lat: json.points_of_interest[i].location.latitude, lng: json.points_of_interest[i].location.longitude};
+                  var contentString = '<div id="content">'+
+                    '<div id="siteNotice">'+'</div>'+
+                    '<h1 id="firstHeading" class="firstHeading">'+ json.points_of_interest[i].title + '</h1>'+
+                    '<span id="bodyContent">'+ json.points_of_interest[i].details.short_description + '<p>Points: ' + json.points_of_interest[i].grades.yapq_grade + '</p>'+ '</span>'+
+                    '<span id="img"><a href="Picture">'+
+                    json.points_of_interest[i].main_image + '</a> </span> </div>';
+                  var infoWindow = new google.maps.InfoWindow({
+                      content: contentString
+                  });
                   var map_marker = new google.maps.Marker({
                       position: myLatLng,
                       map: map,
-                      title: json.points_of_interest[i].title
+                      draggable: true,
+                      animation: google.maps.Animation.DROP,
+                      infoWindowIndex: i,
+                      icon: image
                   });
                   map_marker.setMap(map);
-                }
-               });
-
+                  google.maps.event.addListener(map_marker, 'click', function(event) {
+                      map.panTo(event.latLng);
+                      infoWindows[this.infoWindowIndex].open(map, this);
+                    });
+                  infoWindows.push(infoWindow);
+                  markers.push(map_marker);
+                  }
+                  });
             }
           return false;
      }
-
    $('#search').click(getCity);
    $('#city').keyup(function(event){
        if(event.keyCode == 13){
@@ -132,7 +129,6 @@
             );
         }
 
-
         function initialize() {
             console.log("Google Maps Initialized")
             map = new google.maps.Map(document.getElementById('map-canvas'), {
@@ -149,9 +145,12 @@
                     lat: lat,
                     lng: lng
                 },
-                map: map
+                map: map,
+                draggable: true,
+                animation: google.maps.Animation.DROP
             });
             map_marker.setMap(map);
+            map_marker.addListener('click', toggleBounce);
         }
 
         // moves the marker and center of map
@@ -164,8 +163,11 @@
             map_marker.setPosition({
                 lat: lat,
                 lng: lng,
-                alt: 0
+                alt: 0,
+                draggable: true,
+                animation: google.maps.Animation.DROP
             });
+            map_marker.addListener('click', toggleBounce);
             pushCoordToArray(lat, lng);
 
             var lineCoordinatesPath = new google.maps.Polyline({
@@ -181,6 +183,22 @@
 
         function pushCoordToArray(latIn, lngIn) {
             lineCoordinatesArray.push(new google.maps.LatLng(latIn, lngIn));
+        }
+
+        function toggleBounce() {
+          if (map_marker.getAnimation() !== null) {
+            map_marker.setAnimation(null);
+          } else {
+            map_marker.setAnimation(google.maps.Animation.BOUNCE);
+          }
+        }
+
+        function AutoCenter() {
+        var bounds = new google.maps.LatLngBounds();
+        $.each(markers, function (index, marker) {
+        bounds.extend(marker.position);
+        });
+        map.fitBounds(bounds);
         }
     </script>
 </body>
