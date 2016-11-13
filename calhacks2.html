@@ -99,7 +99,7 @@
     </div>
     <div class="coins"><p> Coins collected: <p></div>
 
-    <div id="background-img" class="background-img" ><img src="https://github.com/prathyushasai/GoGo-Places/blob/master/TAKE2_GoGo_Logo.gif"></div>
+    <div id="background-img" class="background-img" ><img src="TAKE2_GoGo_Logo.gif"></div>
 
     <div id="map-canvas"></div>
 
@@ -116,6 +116,7 @@
         var person = 'https://raw.githubusercontent.com/prathyushasai/GoGo-Places/master/person_Icon.png';
         var image = 'https://raw.githubusercontent.com/prathyushasai/GoGo-Places/master/30coin.png';
         var queryBuilder = "https://api.sandbox.amadeus.com/v1.2/points-of-interest/yapq-search-text?apikey=MdRDIiKITombYOZ8WNpCnXizyYmb2QIG&city_name=";
+        var city_name = '';
 
 
 
@@ -129,7 +130,7 @@
             });
 
             var getCity = function() {
-                var city_name = $('#city').val();
+                city_name = $('#city').val();
                 if (city_name == '') {
                     $('#input').html("<div class='loading'>Please enter something.</div>");
                 } else {
@@ -143,8 +144,8 @@
                             };
                             contentString = '<div class="content" style="display: inline-block;width: 600px;">' +
                                 '<h1 id="place_name" class="place_name">' + json.points_of_interest[i].title + '</h1>' +
-                                '<div id="bodyContent" style="width: 60%; margin: 10px;"">' + json.points_of_interest[i].details.description + '<p><u>Points</u>: ' + json.points_of_interest[i].grades.yapq_grade + '</p>' + '</div>' +
-                                '<div id="img" style="height: 20%;" ><img src="' + json.points_of_interest[i].main_image + '"></div></div>';
+                                '<div id="bodyContent" style="width: 55%; margin: 10px;float:left;"">' + json.points_of_interest[i].details.description + '<p><u>Points</u>: ' + json.points_of_interest[i].grades.yapq_grade + '</p>' + '</div>' +
+                                '<div id="img" style="height: 20%;float:right;" ><img src="' + json.points_of_interest[i].main_image + '"></div></div>';
                             infoWindow = new google.maps.InfoWindow({
                                 content: contentString
                             });
