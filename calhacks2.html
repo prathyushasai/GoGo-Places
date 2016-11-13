@@ -171,6 +171,17 @@
                 }
                 return false;
             }
+            // Removes the markers from the map, but keeps them in the array.
+            function clearMarkers() {
+                setMapOnAll(null);
+            }
+
+            // Deletes all markers in the array by removing references to them.
+            function deleteMarkers() {
+                clearMarkers();
+                markers = [];
+                infoWindows = [];
+            } 
          $('#search').click(function(){
             $('#search').attr("disabled", true);
             getCity();
@@ -184,9 +195,7 @@
         });
         $('#clear').click(function(){
             $('#search').attr("disabled", false);
-            for (var i = 0; i < markers.length; ++i) {
-                markers[i].setMap(null);
-            }
+            deleteMarkers();
         });
 
         function initialize() {
