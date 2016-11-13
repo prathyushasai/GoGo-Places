@@ -8,11 +8,12 @@
     <meta name="description" content="">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
 
-    <style>
+<style>
         html,
         body,
         #map-canvas {
-            height: 1000px;
+            height: 100%;
+            width: 100%;
             margin: 0px;
             padding: 0px;
             position: relative;
@@ -22,24 +23,8 @@
             padding: 10px;
         }
         h2 {
-            font-family: Georgia;
+            font-family: Arial;
             font-size: 15px;
-        }
-        #search {
-          -webkit-border-radius: 60;
-          -moz-border-radius: 60;
-          border-radius: 40px;
-          font-family: Georgia;
-          color: #ffffff;
-          font-size: 15px;
-          background: #0099ff;
-          padding: 2px 6px 2px 6px;
-          text-decoration: none;
-          position: absolute;
-        }
-        #search:hover {
-          background: #9eb0ff;
-          text-decoration: none;
         }
         #city {
             width: 300px;
@@ -69,6 +54,18 @@
             background: linear-gradient(to bottom, #fceabb 0%,#fccd4d 51%,#f8b500 54%,#fbdf93 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
             filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fceabb', endColorstr='#fbdf93',GradientType=0 ); /* IE6-9 */
         }
+        #clear {
+            margin: 5px;
+            height: 30px;
+            font-size: 17px;
+            font-family: Andale Mono;
+            border-style: ridge;
+        }
+        .material-icons {
+            margin: 6px;
+            position: absolute;
+        }
+
     </style>
 
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
@@ -79,9 +76,9 @@
 <body>
     <div class="container">
         <section id="fetch">
-            <input type="text" placeholder="Enter a city name to start earning coins!" id="city" />
-            <button id="search">Search</button>
-            <button id="clear">Clear</button>
+            <i class="material-icons">search</i>
+            <input type="text" placeholder="        Enter a city name to start earning coins!" id="city" />
+            <button id="clear">Reset</button>
         </section>
         <section id="input"></section>
     </div>
