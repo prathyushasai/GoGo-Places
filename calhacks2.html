@@ -70,26 +70,15 @@
                     var queryBuilder = "https://api.sandbox.amadeus.com/v1.2/points-of-interest/yapq-search-text?apikey=MdRDIiKITombYOZ8WNpCnXizyYmb2QIG&city_name=" + city_name;
               $.getJSON(queryBuilder, function(json) {
                 console.log(json)
-                var lat = [];
-                var lng = [];
-                var desc = [];
-                var place_name = [];
-                var i;
                 for (i = 0; i < 8; ++ i) {
-                  lat += json.points_of_interest[i].location.latitude + " "
-                  lng += json.points_of_interest[i].location.longitude + " "
-                  desc += json.points_of_interest[i].details.short_description + " "
-                  place_name += json.points_of_interest[i].title + " "
+                  var myLatLng = {lat: json.points_of_interest[i].location.latitude, lng: json.points_of_interest[i].location.longitude};
+                  var map_marker = new google.maps.Marker({
+                      position: myLatLng,
+                      map: map,
+                      title: json.points_of_interest[i].title
+                  });
+                  map_marker.setMap(map);
                 }
-                var keywds = $("#searchquery").text().split(" ");
-                 if (json != "Nothing found.") {
-                       $('#input').html('<div class="loading">Yay</div><img id="thePoster" src=' + json.points_of_interest[0].main_image);
-                    } else {
-                       $.getJSON("queryBuilder", function(json) {
-                          console.log(json)
-                          $('#input').html('<div class="loading">No</div><img id="thePoster" src=' + json.points_of_interest[0].main_image);
-                       });
-                    }
                });
 
             }
