@@ -59,6 +59,13 @@
             background: linear-gradient(to bottom, #fceabb 0%,#fccd4d 51%,#f8b500 54%,#fbdf93 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
             filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fceabb', endColorstr='#fbdf93',GradientType=0 ); /* IE6-9 */
         }
+        #search {
+            margin: 5px;
+            height: 30px;
+            font-size: 17px;
+            font-family: 'Lato', sans-serif;
+            border-style: ridge;
+        }
         #clear {
             margin: 5px;
             height: 30px;
@@ -93,6 +100,7 @@
         <section id="fetch">
             <i class="material-icons">search</i>
             <input type="text" placeholder="Enter a city name to start earning coins!" id="city" />
+            <button id="search">Search</button>
             <button id="clear">Reset</button>
         </section>
         <section id="input"></section>
@@ -122,6 +130,7 @@
 
         $(document).ready(function() {
           getCurrLocation();
+          $('#search').attr("disabled", false);
             $('#city').focus(function() {
                 var full = $("#input").has("img").length ? true : false;
                 if (full == false) {
@@ -135,8 +144,8 @@
                     $('#input').html("<div class='loading'>Please enter something.</div>");
                 } else {
                     $('#input').html("<div class='loading'>Here are cool places to explore!</div>");
-                    queryBuilder += city_name;
-                    $.getJSON(queryBuilder, function(json) {
+                    var query = queryBuilder + city_name;
+                    $.getJSON(query, function(json) {
                         for (i = 0; i < 8; ++i) {
                             var myLatLng = {
                                 lat: json.points_of_interest[i].location.latitude,
@@ -174,12 +183,12 @@
             $('#search').attr("disabled", true);
             getCity();
            });
-           $('#city').keyup(function(event){
+           /*$('#city').keyup(function(event){
                if(event.keyCode == 13){
                     $('#search').attr('disabled', 'disabled');
                     getCity();
                }
-           });
+           });*/
         });
         $('#clear').click(function(){
             $('#search').attr("disabled", false);
@@ -243,7 +252,7 @@
             });
             pushCoordToArray(lat, lng);
 
-            var lineCoordinatesPath = new google.maps.Polyline({
+            /*var lineCoordinatesPath = new google.maps.Polyline({
                 path: lineCoordinatesArray,
                 geodesic: true,
                 strokeColor: '#2E10FF',
@@ -251,7 +260,7 @@
                 strokeWeight: 2
             });
 
-            lineCoordinatesPath.setMap(map);
+            lineCoordinatesPath.setMap(map);*/
         }
 
         function pushCoordToArray(latIn, lngIn) {
