@@ -11,12 +11,62 @@
         html,
         body,
         #map-canvas {
-            height: 700px;
+            height: 1000px;
             margin: 0px;
-            padding: 0px
+            padding: 0px;
+            position: relative;
+            z-index: -1;
         }
         h1 {
             padding: 10px;
+        }
+        h2 {
+            font-family: Georgia;
+            font-size: 15px;
+        }
+        #search {
+          -webkit-border-radius: 60;
+          -moz-border-radius: 60;
+          border-radius: 40px;
+          font-family: Georgia;
+          color: #ffffff;
+          font-size: 15px;
+          background: #0099ff;
+          padding: 2px 6px 2px 6px;
+          text-decoration: none;
+          position: absolute;
+        }
+        #search:hover {
+          background: #9eb0ff;
+          text-decoration: none;
+        }
+        #city {
+            width: 300px;
+            height: 30px;
+            font-size: 15px;
+            font-family: Georgia;
+        }
+        .container {
+            padding: 60px 20px;
+            position: absolute;
+        }
+        .coins {
+            height: 20px;
+            width: 225px;
+            padding: 0px 10px 20px 10px;
+            position: absolute;
+            font-family: '8BITWONDERNominal';
+            font-size: 12px;
+            text-align: left;
+            display: inline-block;
+            background-color: orange;
+            margin: 20px auto auto 1150px;
+            border-style: ridge;
+            background: #fceabb; /* Old browsers */
+            background: -moz-linear-gradient(top, #fceabb 0%, #fccd4d 51%, #f8b500 54%, #fbdf93 100%); /* FF3.6-15 */
+            background: -webkit-linear-gradient(top, #fceabb 0%,#fccd4d 51%,#f8b500 54%,#fbdf93 100%); /* Chrome10-25,Safari5.1-6 */
+            background: linear-gradient(to bottom, #fceabb 0%,#fccd4d 51%,#f8b500 54%,#fbdf93 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fceabb', endColorstr='#fbdf93',GradientType=0 ); /* IE6-9 */
         }
     </style>
 
