@@ -18,11 +18,26 @@
         h1 {
             padding: 10px;
         }
-
+        #search {
+          -webkit-border-radius: 60;
+          -moz-border-radius: 60;
+          border-radius: 60px;
+          font-family: Arial;
+          color: #ffffff;
+          font-size: 17px;
+          background: #0099ff;
+          padding: 2px 6px 2px 6px;
+          text-decoration: none;
+        }
+        #search:hover {
+          background: #9eb0ff;
+          text-decoration: none;
+        }
     </style>
 
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.6.2.min.js"></script>
+
 
 </head>
 
@@ -54,26 +69,15 @@
                     var queryBuilder = "https://api.sandbox.amadeus.com/v1.2/points-of-interest/yapq-search-text?apikey=MdRDIiKITombYOZ8WNpCnXizyYmb2QIG&city_name=" + city_name;
               $.getJSON(queryBuilder, function(json) {
                 console.log(json)
-                var lat = [];
-                var lng = [];
-                var desc = [];
-                var place_name = [];
-                var i;
                 for (i = 0; i < 8; ++ i) {
-                  lat += json.points_of_interest[i].location.latitude + " "
-                  lng += json.points_of_interest[i].location.longitude + " "
-                  desc += json.points_of_interest[i].details.short_description + " "
-                  place_name += json.points_of_interest[i].title + " "
+                  var myLatLng = {lat: json.points_of_interest[i].location.latitude, lng: json.points_of_interest[i].location.longitude};
+                  var map_marker = new google.maps.Marker({
+                      position: myLatLng,
+                      map: map,
+                      title: json.points_of_interest[i].title
+                  });
+                  map_marker.setMap(map);
                 }
-                var keywds = $("#searchquery").text().split(" ");
-                 if (json != "Nothing found.") {
-                       $('#input').html('<div class="loading">Yay</div><img id="thePoster" src=' + json.points_of_interest[0].main_image);
-                    } else {
-                       $.getJSON("queryBuilder", function(json) {
-                          console.log(json)
-                          $('#input').html('<div class="loading">No</div><img id="thePoster" src=' + json.points_of_interest[0].main_image);
-                       });
-                    }
                });
 
             }
