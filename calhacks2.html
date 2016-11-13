@@ -2,8 +2,8 @@
 <html class="no-js">
   <link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/8bit-wonder" type="text/css"/>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet"> 
-  
+  <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+
 <head>
     <meta charset="utf-8">
     <title>GoGo Places</title>
@@ -77,7 +77,7 @@
             margin: 20px;
             margin-left: 120px;
             width: 225;
-        }        
+        }
         img {
             width: 225px;
         }
@@ -116,27 +116,11 @@
         var person = 'https://raw.githubusercontent.com/prathyushasai/GoGo-Places/master/person_Icon.png';
         var image = 'https://raw.githubusercontent.com/prathyushasai/GoGo-Places/master/30coin.png';
         var queryBuilder = "https://api.sandbox.amadeus.com/v1.2/points-of-interest/yapq-search-text?apikey=MdRDIiKITombYOZ8WNpCnXizyYmb2QIG&city_name=";
-        var lastOpened = 0;
 
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-                    var locationMarker = null;
-                    if (locationMarker) {
-                        return;
-                    }
-                    lat = position.coords["latitude"];
-                    lng = position.coords["longitude"];
-                    google.maps.event.addDomListener(window, 'load', initialize());
-                },
-                function(error) {
-                    console.log("Error: ", error);
-                }, {
-                    enableHighAccuracy: true
-                }
-            );
-        }
+
 
         $(document).ready(function() {
+          getCurrLocation();
             $('#city').focus(function() {
                 var full = $("#input").has("img").length ? true : false;
                 if (full == false) {
@@ -157,10 +141,10 @@
                                 lat: json.points_of_interest[i].location.latitude,
                                 lng: json.points_of_interest[i].location.longitude
                             };
-                            contentString = '<div id="content" style="width: 600px">' +
+                            contentString = '<div class="content" style="display: inline-block;width: 600px;">' +
                                 '<h1 id="place_name" class="place_name">' + json.points_of_interest[i].title + '</h1>' +
-                                '<div id="bodyContent" style="width: 60%; margin: 10px;align: left; display:inline-block;">' + json.points_of_interest[i].details.description + '<p><u>Points</u>: ' + json.points_of_interest[i].grades.yapq_grade + '</p>' + '</div>' +
-                                '<div id="img" style="height: 20%;display:inline-block; aligh:right;" ><img src="' + json.points_of_interest[i].main_image + '"></div></div>';
+                                '<div id="bodyContent" style="width: 60%; margin: 10px;"">' + json.points_of_interest[i].details.description + '<p><u>Points</u>: ' + json.points_of_interest[i].grades.yapq_grade + '</p>' + '</div>' +
+                                '<div id="img" style="height: 20%;" ><img src="' + json.points_of_interest[i].main_image + '"></div></div>';
                             infoWindow = new google.maps.InfoWindow({
                                 content: contentString
                             });
@@ -174,9 +158,7 @@
                             map_marker.setMap(map);
                             google.maps.event.addListener(map_marker, 'click', function(event) {
                                 map.panTo(event.latLng);
-                                if (this.infoWindowIndex > 0) {
-                                    infoWindows[lastOpened].close();
-                                }
+                                closeAllInfoWindows();
                                 infoWindows[this.infoWindowIndex].open(map, this);
                                 lastOpened = this.infoWindowIndex;
                             });
@@ -187,17 +169,6 @@
                 }
                 return false;
             }
-            // Removes the markers from the map, but keeps them in the array.
-            function clearMarkers() {
-                setMapOnAll(null);
-            }
-
-            // Deletes all markers in the array by removing references to them.
-            function deleteMarkers() {
-                clearMarkers();
-                markers = [];
-                infoWindows = [];
-            } 
          $('#search').click(function(){
             $('#search').attr("disabled", true);
             getCity();
@@ -211,8 +182,29 @@
         });
         $('#clear').click(function(){
             $('#search').attr("disabled", false);
+            closeAllInfoWindows();
             deleteMarkers();
         });
+
+        function getCurrLocation() {
+                  if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                    var locationMarker = null;
+                    if (locationMarker) {
+                        return;
+                    }
+                    lat = position.coords["latitude"];
+                    lng = position.coords["longitude"];
+                    google.maps.event.addDomListener(window, 'load', initialize());
+                },
+                function(error) {
+                    console.log("Error: ", error);
+                }, {
+                    enableHighAccuracy: true
+                }
+            );
+        }
+        }
 
         function initialize() {
             console.log("Google Maps Initialized")
@@ -224,7 +216,6 @@
                     alt: 0
                 }
             });
-
             map_marker = new google.maps.Marker({
                 position: {
                     lat: lat,
@@ -235,7 +226,6 @@
                 icon: person
             });
             map_marker.setMap(map);
-            //map_marker.addListener('click', toggleBounce);
         }
 
         function redraw() {
@@ -250,7 +240,6 @@
                 alt: 0,
                 animation: google.maps.Animation.DROP
             });
-            //map_marker.addListener('click', toggleBounce);
             pushCoordToArray(lat, lng);
 
             var lineCoordinatesPath = new google.maps.Polyline({
@@ -268,18 +257,25 @@
             lineCoordinatesArray.push(new google.maps.LatLng(latIn, lngIn));
         }
 
-        /*function toggleBounce() {
-            if (map_marker.getAnimation() !== null) {
-                map_marker.setAnimation(null);
-            } else {
-                map_marker.setAnimation(google.maps.Animation.BOUNCE);
-            }
-        }*/
+        function closeAllInfoWindows() {
+          for (var i=0;i<infoWindows.length;i++) {
+             infoWindows[i].close();
+          }
+        }
 
+            // Deletes all markers in the array by removing references to them.
+            function deleteMarkers() {
+                for (i = 0; i < 8; ++i) {
+                  markers[i].setMap(null);
+                }
+                markers = [];
+                infoWindows = [];
+                redraw();
+            }
         function AutoCenter() {
             var bounds = new google.maps.LatLngBounds();
             $.each(markers, function(index, marker) {
-                bounds.extend(marker.position);
+                bounds.extend(map_marker.position);
             });
             map.fitBounds(bounds);
         }
