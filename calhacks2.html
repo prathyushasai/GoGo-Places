@@ -31,6 +31,7 @@
         <section id="fetch">
             <input type="text" placeholder="Enter a city name" id="city" />
             <button id="search">Search</button>
+            <button id="clear">Clear</button>
         </section>
         <section id="input">
         </section>
@@ -43,6 +44,7 @@
                     $('#input').empty();
                 }
             });
+            
 
             var getCity = function() {
                 var city_name = $('#city').val();
@@ -69,16 +71,16 @@
                   var map_marker = new google.maps.Marker({
                       position: myLatLng,
                       map: map,
-                      draggable: true,
+                      draggable: false,
                       animation: google.maps.Animation.DROP,
                       infoWindowIndex: i,
-                      icon: image
+                      icon: image,
                   });
                   map_marker.setMap(map);
                   google.maps.event.addListener(map_marker, 'click', function(event) {
                       map.panTo(event.latLng);
                       infoWindows[this.infoWindowIndex].open(map, this);
-                    });
+                    }); 
                   infoWindows.push(infoWindow);
                   markers.push(map_marker);
                   }
@@ -86,13 +88,23 @@
             }
           return false;
      }
-   $('#search').click(getCity);
+   $('#search').click(function(){
+    $('#search').attr("disabled", true);
+    getCity();
+   });
    $('#city').keyup(function(event){
        if(event.keyCode == 13){
-           getCity();
+            ('#search').attr('disabled', 'disabled');
+            getCity();
        }
    });
 
+});
+$('#clear').click(function(){
+    $('#search').attr("disabled", false);
+    for (var i = 0; i < markers.length; ++i) {
+        markers[i].setMap(null);
+    }
 });
     </script>
 
@@ -146,7 +158,7 @@
                     lng: lng
                 },
                 map: map,
-                draggable: true,
+                draggable: false,
                 animation: google.maps.Animation.DROP
             });
             map_marker.setMap(map);
@@ -164,7 +176,7 @@
                 lat: lat,
                 lng: lng,
                 alt: 0,
-                draggable: true,
+                draggable: false,
                 animation: google.maps.Animation.DROP
             });
             map_marker.addListener('click', toggleBounce);
